@@ -1,29 +1,38 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from "vue";
+import VueRouter from "vue-router";
+// 导入路由组件
+import Member from "@/views/Member.vue";
+import Cart from "@/views/Cart.vue";
+import Search from "@/views/Search.vue";
+import Home from "@/views/Home.vue";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
+// 定义路由规则
 const routes = [
   {
-    path: '/',
-    name: 'home',
-    component: Home
+    path: "/home",
+    component:() => import('@/views/Home.vue')
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: "/member",
+    component:() => import('@/views/Member.vue')
+  },
+  {
+    path: "/cart",
+    component:() => import('@/views/Cart.vue')
+  },
+  {
+    path: "/search",
+    component:() => import('@/views/Search.vue')
   }
-]
+];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+  linkActiveClass: "mui-active"/* 路由高亮类改名 */
+});
 
-export default router
+export default router;
