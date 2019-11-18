@@ -21,12 +21,29 @@
 				<span class="mui-tab-label">搜索</span>
 			</router-link>
 		</nav>
-    <router-view/>
+    <transition>
+      <router-view/>
+    </transition>
   </div>
 </template>
 
-<style lang="scss">
+<style>
 #app{
-  padding-top: 40px
+  padding-top: 40px;
+  overflow-x: hidden;
+  position: relative;
+}
+.v-enter{
+  opacity: 0;
+  transform: translateX(100%)
+}
+.v-leave-to{
+  opacity: 0;
+  transform: translateX(-100%);
+  position: absolute;
+}
+
+.v-enter-active,.v-leave-active{
+  transition: all 0.5s ease;
 }
 </style>
