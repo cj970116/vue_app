@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- 使用mint-ui组件做顶部固定栏 -->
-     <mt-header fixed title="vue案例"></mt-header>
+     <mt-header fixed title="电影坞"></mt-header>
      <!-- 使用muitabbar做底部 -->
      <nav class="mui-bar mui-bar-tab">
 			<router-link class="mui-tab-item " to="/home">
@@ -30,6 +30,7 @@
 <style>
 #app{
   padding-top: 40px;
+  padding-bottom:50.4px;
   overflow-x: hidden;
   position: relative;
 }
@@ -46,4 +47,5 @@
 .v-enter-active,.v-leave-active{
   transition: all 0.5s ease;
 }
+
 </style>

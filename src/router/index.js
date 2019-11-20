@@ -6,6 +6,7 @@ import Cart from "@/views/Cart.vue";
 import Search from "@/views/Search.vue";
 import Home from "@/views/Home.vue";
 import Newslist from "@/components/Newslist.vue"
+import Newsinfo from "@/components/Newsinfo.vue"
 
 Vue.use(VueRouter);
 
@@ -34,6 +35,10 @@ const routes = [
   {
     path:"/home/newslist",
     component:() => import('@/components/Newslist.vue')
+  },
+  {
+    path:"/home/newsinfo/:id",
+    component:() => import('@/components/Newsinfo.vue')
   }
 ];
 

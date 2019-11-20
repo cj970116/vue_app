@@ -8,6 +8,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
 Vue.prototype.$axios = axios
+import Qs from 'qs'
 
 // 导入mint-ui的css样式表,老版本可直接按需导入,2.0x需要导入全局css样式
 import 'mint-ui/lib/style.css'
@@ -30,6 +31,8 @@ Vue.component(SwipeItem.name, SwipeItem);
 Vue.component(Header.name, Header);
 
 Vue.config.productionTip = false
+
+
 
 new Vue({
   router,/* 挂载路由实例 */
