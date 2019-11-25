@@ -62,11 +62,17 @@ module.exports = {
 
     hotOnly: false, // See https://github.com/vuejs/vue-cli/blob/dev/docs/cli-service.md#configuring-proxy
 
-    proxy: '',
+    proxy:{
+      '/api':{
+        target:'https://douban.uieee.com/v2/',
+        changeOrigin:true,
+        ws:true,
+        pathRewirte:{
+          '^api':''
+        }
+      }
+    },
     hot:true
-    // string | Object
-
-    // before: app => {}
   },
 
   pluginOptions: {

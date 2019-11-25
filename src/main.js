@@ -24,6 +24,13 @@ import './assets/mui/css/icons-extra.css'
 
 // 按需引入mint-ui中swipe组件实现轮播
 import { Swipe, SwipeItem } from 'mint-ui';
+// 导入vant-ui按钮组件
+import { Button } from 'vant';
+Vue.use(Button);
+
+import 'element-ui/lib/theme-chalk/index.css';
+import { Rate } from 'element-ui';
+Vue.use(Rate)
 
 Vue.component(Swipe.name, Swipe);
 Vue.component(SwipeItem.name, SwipeItem);

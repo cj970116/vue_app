@@ -5,13 +5,15 @@
       v-for="(item,index) in newsList"
       :key="index"
       >
-        <router-link class="mui-navigate-right" :to="'/home/newsinfo/'+index">
+        <router-link class="mui-navigate-right" :to="'/home/newsinfo/'+item.id"><!-- 路由的链接拼接上数组的id -->
           <img class="mui-media-object mui-pull-left" :src="getImages(item.images.small)" />
           <div class="mui-media-body">
             <h1>{{item.title}}</h1>
+            <p class="mui-ellipsis">类型:{{item.genres.join()}}</p>
+            <p class="mui-ellipsis">主演:{{item.directors[0].name}}</p>
             <p class="mui-ellipsis">
-              <span>发表时间:{{item.mainland_pubdate}}</span>
-              <span>点赞:0次</span>
+              <span>上映时间:{{item.mainland_pubdate}}</span>
+              <span>时长:{{item.durations[0]}}</span>
             </p>
           </div>
         </router-link>
@@ -21,35 +23,22 @@
 </template>
 
 <script>
+import  { home} from '../request/api'
 export default {
     created(){
         this.getNews()
-        this.$store.commit('getAxios')
     },
     data(){
         return{
             newsList:[],
-            moviesId:[]
         }
     },
     methods:{
         getNews(){
-            this.$axios({
-              method:'GET',
-              url:'https://douban.uieee.com/v2/movie/in_theaters',
-              header:{"content-type":"application/json; charset=utf-8"}
-            })
-            .then(response=>{
-                    // console.log(response)
-                    this.newsList = response.data.subjects.slice(0,20)
-                    let moviesList =[]
-                    moviesList =response.data.subjects
-                    for(let i of moviesList){
-                        this.moviesId.push(i.id)
-                    }
-                }
-            ).catch((err)=>{alert(err)})
-            console.log(this.moviesId)
+          home().then(response=>{
+             this.newsList = response.subjects.slice(0,20)
+             console.log(response)
+          })
         },
         getImages(_url){
           if(_url!==undefined){
@@ -64,6 +53,14 @@ export default {
 
 <style lang="scss" scoped>
 .mui-media {
+  background: #EBEEF5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+  .mui-navigate-right{
+    img{
+      width: 100%;
+      height: 100%;
+    }
+  }
   h1 {
     font-size: 18px;
   }
@@ -71,7 +68,6 @@ export default {
     font-size: 12px;
   }
   .mui-ellipsis {
-    color: slateblue;
     display: flex;
     justify-content: space-between;
   }

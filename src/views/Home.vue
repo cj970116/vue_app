@@ -42,6 +42,7 @@
 icon
 <script>
 import axios from "axios";
+import  { home} from '../request/api'
 
 export default {
   created() {
@@ -53,21 +54,19 @@ export default {
     };
   },
   methods: {
-    getLunbo() {
-      this.$axios({
-        method:'GET',
-        url:"  https://douban.uieee.com/v2/movie/in_theaters",
-        header:{"Content-Type":"json"}
-      }).then(
+    getLunbo(){
+      home({header:{"content-type":"application/json; charset=utf-8"}}).then(
         response => {
           // console.log(response);
-         this.imgList =response.data.subjects.slice(0,5)
+         this.imgList =response.subjects.slice(0,5)
         },
         err => {
           alert(err);
         }
-      );
-    },
+      )
+    }
+    ,
+   
     getImages(_url){
           if(_url!==undefined){
             let _u=_url.substring(7)
