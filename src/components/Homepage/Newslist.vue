@@ -5,8 +5,8 @@
       v-for="(item,index) in newsList"
       :key="index"
       >
-        <router-link class="mui-navigate-right" :to="'/home/newsinfo/'+item.id"><!-- 路由的链接拼接上数组的id -->
-          <img class="mui-media-object mui-pull-left" :src="getImages(item.images.small)" />
+        <router-link class="mui-navigate-right" :to="'/home/newslist/newsinfo/'+item.id"><!-- 路由的链接拼接上数组的id -->
+          <img class="mui-media-object mui-pull-left" v-lazy="getImages(item.images.small)" />
           <div class="mui-media-body">
             <h1>{{item.title}}</h1>
             <p class="mui-ellipsis">类型:{{item.genres.join()}}</p>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import  { home} from '../request/api'
+import  { home} from '../../request/api'
 export default {
     created(){
         this.getNews()
@@ -46,6 +46,9 @@ export default {
             return 'https://images.weserv.nl/?url='+_u  /* 这是一个专门缓存图片的网址 */
           }
         },
+        onClickLeft(){
+          this.$router.push('../')
+        }
        
     }
 };

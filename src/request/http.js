@@ -27,7 +27,7 @@ export function post(url, params) {
       resolve(res.data);  
      })  
      .catch(err => {   
-      reject(err.data)  
+      reject(err)  
      }) 
     });
    }

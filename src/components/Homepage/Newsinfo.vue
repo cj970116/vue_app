@@ -1,58 +1,43 @@
 <template>
   <div class="info">
-<!-- 标题 -->
+    <!-- 标题 -->
     <h1 class="title">
       <span>{{moviesInfo.title}}</span>
     </h1>
-<!-- 三重表达式控制台会出错,但正常渲染,这里在data中包装下rating -->
-<!-- element-ui的评分组件 -->
+    <!-- 三重表达式控制台会出错,但正常渲染,这里在data中包装下rating -->
     <div class="rate">
-      <el-rate
-        v-model="value"
-        disabled
-        text-color="#ff9900"
-        score-template="{value}"
-        >
-      </el-rate>
+      <!-- vant-ui评分组件 ,vulue值需除以2,10分制,五颗星星 -->
+      <van-rate v-model="value" readonly  allow-half/>
       <span>{{rating.average}}分</span>
     </div>
 
-<!--子标题  -->
+    <!--子标题  -->
     <p class="subTitle">
       <span>{{moviesInfo.wish_count}}人想看</span>
       <span>国内上映日期:{{moviesInfo.mainland_pubdate}}</span>
     </p>
     <hr>
-<!-- 海报图展示 -->
-    <div class="showPhotos" v-for="item in photos" :key="item.id"><img :src="getImages(item.thumb)" alt=""></div>
-<!-- 电影简介 -->
-    <p class="summary">{{moviesInfo.summary}}</p>
-<!-- 主演信息 -->
-    <h2>主演</h2>
-    <div class="casts"><p v-for="item in casts" :key="item.id"><img :src="getImages(item.avatars.large)" alt=""><span>{{item.name}}</span></p></div>
-<!-- 评论表单 -->
-    <form class="mui-input-group">
-    <div class="input-row">
-        <textarea placeholder="请输入评论内容(最多120字)" v-model="inputvalue"></textarea>
+    <!-- 海报图展示 -->
+    <div class="showPhotos" v-for="(item,index) in photos" :key="index">
+      <img v-lazy="getImages(item.thumb)" @click="preview(index)"><!-- 绑定点击事件触发图片预览方法 -->
     </div>
-    <van-button class="button" type="primary" size="large" @click="postComment">发表评论</van-button>
-    <ul class="mui-table-view">
-      <li v-for="item in comments" :key="item.id" class="mui-table-view-cell">
-        <p>{{item.content}}</p>
-        <div class="user">
-          <div><img :src="item.author.avatar" width="30px" alt=""></div>
-          <div><p>{{item.author.name}}</p><p>发表于:{{item.created_at}}</p></div>
-        </div>
-      </li>  
-    </ul>
-    </form>
-    
+    <!-- 电影简介 -->
+    <p class="summary">{{moviesInfo.summary}}</p>
+    <!-- 主演信息 -->
+    <h2>主演</h2>
+    <div class="casts"><p v-for="(item,index) in casts" :key="index"><img :src="getImages(item.avatars.large)" alt="" ><span>{{item.name}}</span></p></div>
+    <!-- 自定义评论组件,把拼接好的url传给子组件 -->
+    <v-mcomment :url="'/movie/subject/'+id"></v-mcomment>
   </div>
 </template>
 
 <script>
-import {post} from '../request/http.js'
+import {post} from '../../request/http.js'
+import vMcomment from '@/components/Comment_movies.vue'
+import { ImagePreview } from 'vant';
 export default {
+  name:'v-info',
+  components:{vMcomment},
   created(){
     this.getInfo();
   },
@@ -60,15 +45,15 @@ export default {
     return {
         moviesInfo:{},
         photos:[],
+        photosList:[],
         rating:{},
         casts:[],
-        comments:[],
         id:this.$route.params.id,
         value:0,
-        inputvalue:''
     };
   },
   methods: {
+    // 发送请求获取电影信息
     getInfo() {
       // 拿到路由传递的参数
       this.$axios({
@@ -79,11 +64,12 @@ export default {
         response => {
           console.log(response)
           this.moviesInfo = response.data /* 单个电影的所有数据 */
-          this.photos = response.data.photos.slice(0,4)/* 电影海报 */
+          
           this.rating = response.data.rating /* 电影评分 */
           this.casts = response.data.casts /* 主演的信息 */
           this.comments = response.data.popular_comments
           this.value = this.rating.average/2
+          this.photos = response.data.photos.slice(0,4)/* 电影海报 */
         },
         err => {
           alert(err);
@@ -97,22 +83,36 @@ export default {
             return 'https://images.weserv.nl/?url='+_u  /* 这是一个专门缓存图片的网址 */
           }
     },
-    postComment(){
+    // 发表评论的方法
+    addComment(){
       this.$axios({
         method:'GET',
         url:"/movie/subject/"+this.id,
       }).then(()=>{
         let cmt = {
           content:this.inputvalue,
-          author:{name:'匿名用户',avatar:'../assets/images/logo.png'},
-          created_at:Date.now()
+          author:{name:'匿名用户',avatar:'https://img1.doubanio.com/icon/u2126832-179.jpg'},
+          created_at:new Date()
         }
         this.comments.unshift(cmt)
         this.inputvalue=''
       })
-    }
-
-  }
+    },
+    // 图片预览功能
+    preview(index){
+        let list =[]
+        for(let i=0;i<this.photos.length;i++){
+          list.push(this.getImages(this.photos[i].thumb))
+        }
+        ImagePreview({
+          images:list,
+          startPosition:index,/* 开始位置索引 */
+          onClose() {
+            // do something
+          }
+          });
+    },
+  },
 };
 </script>
 
@@ -137,7 +137,9 @@ export default {
     }
     .showPhotos{
       img{
-        width: 100%
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 0 2px gray;
       }
     }
     .summary{
@@ -154,29 +156,6 @@ export default {
           align-items: center;
         }
         img{width: 80%}
-    }
-    .input-row{
-      margin-top: 30px 0;
-      textarea{
-        height: 100px;
-      }
-    }
-    .button{
-      margin: 30px 0;
-    }
-    .mui-table-view{
-      .mui-table-view-cell{
-        text-indent: 2em;
-        display: flex;
-        flex-direction: column;
-        .user{
-          display: flex;
-          justify-content:start;
-         img{
-           border-radius: 50%
-         }
-        }
-      }
     }
   }
 </style>

@@ -64,7 +64,7 @@ module.exports = {
 
     proxy:{
       '/api':{
-        target:'https://douban.uieee.com/v2/',
+        target:'https://douban-api.uieee.com/v2/',
         changeOrigin:true,
         ws:true,
         pathRewirte:{
