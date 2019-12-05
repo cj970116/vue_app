@@ -19,7 +19,7 @@
       </router-link>
       <router-link class="mui-tab-item" to="/cart">
         <span class="mui-icon mui-icon-extra mui-icon-extra-cart"
-          ><span class="mui-badge" id="badge">0</span></span
+          ><span class="mui-badge" id="badge">{{$store.getters.getSummery}}</span></span
         >
         <span class="mui-tab-label">购物车</span>
       </router-link>
@@ -32,7 +32,7 @@
     enter-active-class="animated fadeInLeft"
     leave-active-class="animated fadeOutLeft"
     mode="out-in"
-    :duration="800"
+    :duration="500"
     >
       <router-view />
     </transition>

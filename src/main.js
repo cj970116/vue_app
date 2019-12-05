@@ -32,7 +32,7 @@ import './assets/mui/css/icons-extra.css'
 // 按需引入mint-ui中swipe组件实现轮播
 // import { Swipe, SwipeItem } from 'mint-ui';
 // 导入vant-ui按钮组件和评分组件
-import { Button,Rate,Tab,Tabs,Lazyload,ImagePreview,NavBar,Icon,Swipe,SwipeItem,Stepper,Image,Loading} from 'vant';
+import { Button,Rate,Tab,Tabs,Lazyload,ImagePreview,NavBar,Icon,Switch,Swipe,SwipeItem,Stepper,Image,Loading,Toast} from 'vant';
 Vue.use(Button);
 Vue.use(Rate);
 Vue.use(Tab).use(Tabs);
@@ -44,6 +44,8 @@ Vue.use(Swipe).use(SwipeItem)
 Vue.use(Stepper)
 Vue.use(Image)
 Vue.use( Loading)
+Vue.use( Toast)
+Vue.use(Switch)
 
 
 Vue.component(Swipe.name, Swipe);

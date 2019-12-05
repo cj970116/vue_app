@@ -8,24 +8,19 @@
         <img v-lazy="item.src" />
       </van-swipe-item>
     </van-swipe>
-    <div class="mui-card" v-for="item in goodsinfo" :key="item.id">
+    <div class="mui-card">
       <!--页眉，放置标题-->
-      <div class="mui-card-header">{{ item.title }}</div>
+      <div class="mui-card-header">{{ goodsinfo.title }}</div>
       <!--内容区-->
       <div class="mui-card-content">
         <p class="price">
-          <del>￥{{ item.market_price }}</del>
-          <span>￥{{ item.sell_price }}</span>
+          <del>￥{{ goodsinfo.market_price }}</del>
+          <span>￥{{ goodsinfo.sell_price }}</span>
         </p>
-        <div class="stepper">
+        <div class="stepper" ref="numbox">
           <span>购买数量</span>
-          <div class="mui-numbox">
-            <!-- "-"按钮，点击可减小当前数值 -->
-            <button class="mui-btn mui-numbox-btn-minus" type="button" @click="sub">-</button>
-            <input class="mui-numbox-input" type="number" v-model="value" ref="numbox" />
-            <!-- "+"按钮，点击可增大当前数值 -->
-            <button class="mui-btn mui-numbox-btn-plus" type="button" @click="add">+</button>
-          </div>
+          <!-- 自定义的子组件 -->
+          <num-box @getCount="getSelectCount"  :max="goodsinfo.stock_quantity"></num-box>
         </div>
         <br />
         <p class="btn">
@@ -35,14 +30,14 @@
         </p>
       </div>
     </div>
-    <div class="mui-card" v-for="(item, index) in goodsinfo" :key="index">
+    <div class="mui-card">
       <!--页眉，放置标题-->
       <div class="mui-card-header header">商品参数</div>
       <!--内容区-->
       <div class="mui-card-content goodsArg">
-        <p>商品货号:{{ item.goods_no }}</p>
-        <p>库存:{{ item.stock_quantity }}件</p>
-        <p>上架时间:{{ item.add_time | dateFormat }}</p>
+        <p>商品货号:{{ goodsinfo.goods_no }}</p>
+        <p>库存:{{ goodsinfo.stock_quantity }}件</p>
+        <p>上架时间:{{ goodsinfo.add_time | dateFormat }}</p>
       </div>
       <!--页脚，放置补充信息或支持的操作-->
       <div class="mui-card-footer">
@@ -55,7 +50,9 @@
 </template>
 
 <script>
+import numBox from "../Numbox";
 export default {
+  components: { numBox },
   created() {
     this.getImages();
     this.getGoodsInfo();
@@ -64,9 +61,9 @@ export default {
     return {
       id: this.$route.params.id,
       images: [],
-      goodsinfo: [],
-      value: 1,
-      flag: false
+      goodsinfo: {},
+      flag: false,
+      count: 1
     };
   },
   methods: {
@@ -75,24 +72,24 @@ export default {
       // 注意:1. refs的值在mounted时取不到,updated时才可以取到
       //     2. style.left的值后面需要加上'px'
       // 思路:在input输入框位置挂上ref ,动态获取(0,0)坐标点和input输入框的水平与垂直距离差,以此来作为小球起始位置
-      // console.log(this.$refs.numbox[0].getBoundingClientRect().left);
-      el.style.left = this.$refs.numbox[0].getBoundingClientRect().left + "px";
-      el.style.top = this.$refs.numbox[0].getBoundingClientRect().top + "px";
+      // console.log(this.$refs.numbox.getBoundingClientRect().left);
+      el.style.left =this.$refs.numbox.getBoundingClientRect().left + 200 + "px";
+      el.style.top = this.$refs.numbox.getBoundingClientRect().top + "px";
       el.style.transform = "translate(0,0)";
     },
     enter(el, done) {
       // 思路:1. 动态获取小球的初始位置与购物车徽标位置的横纵坐标差
-      //      2. 以此作为小球位移的横纵坐标值 
-      el.offsetWidth;/* 必需加上这句,否者小球瞬移看不见轨迹 */
+      //      2. 以此作为小球位移的横纵坐标值
+      el.offsetWidth; /* 必需加上这句,否者小球瞬移看不见轨迹 */
       const ballPosition = this.$refs.ball.getBoundingClientRect();
       const badgePosition = document
         .getElementById("badge")
         .getBoundingClientRect();
       const xDist = badgePosition.left - ballPosition.left;
       const yDist = badgePosition.top - ballPosition.top;
-      el.style.transform = `translate(${xDist}px, ${yDist}px)`;/* 模板语法 */
+      el.style.transform = `translate(${xDist}px, ${yDist}px)`; /* 模板语法 */
       el.style.transition = "all 0.5s cubic-bezier(.4,-0.3,1,.68)";
-      done();/* 表示执行afterEnter */
+      done(); /* 表示执行afterEnter */
     },
     afterEnter(el) {
       this.flag = !this.flag;
@@ -109,27 +106,25 @@ export default {
         .get("http://www.liulongbin.top:3005/api/goods/getinfo/" + this.id)
         .then(res => {
           // console.log(res.data);
-          this.goodsinfo = res.data.message;
+          this.goodsinfo = res.data.message[0];
         });
-    },
-    add() {
-      // 控制加减范围
-      if (this.value <= 9) {
-        this.value++;
-      } else {
-        return;
-      }
-    },
-    sub() {
-      if (this.value > 1) {
-        this.value--;
-      } else {
-        return;
-      }
     },
     // 点击添加购物车时小球显示
     addCart() {
       this.flag = !this.flag;
+      let goodsList = {
+        id:this.id,
+        count:this.count,
+        selected:true,
+        price:this.goodsinfo.sell_price,
+        stock_quantity:this.goodsinfo.stock_quantity
+      }
+      // 非法输入检测
+      if(this.count>=1 && this.count<this.goodsinfo.stock_quantity){
+        this.$store.commit('getCar',goodsList)
+      }else{
+        this.$toast.fail('不合法输入')
+      }
     },
     // 编程式导航
     desc(id) {
@@ -139,7 +134,11 @@ export default {
     comment(id) {
       id = this.id;
       this.$router.push({ name: "comment", params: { id } });
-    }
+    },
+    getSelectCount(value) {
+      this.count = value;
+      // console.log("父组件接收:" + this.count);
+    },
   }
 };
 </script>
