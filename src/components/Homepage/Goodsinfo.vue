@@ -204,4 +204,18 @@ export default {
   background-color: orangered;
   z-index: 99;
 }
+@media screen and (min-width:1024px) and (max-width:1920px){
+  .van-swipe{
+    width: 20vw;
+    height: 50vh;
+    margin: 0 auto;
+  }
+  .van-swipe-item{
+    text-align: center;
+    img{
+      width: 60%;
+      height: 100%;
+    }
+  }
+}
 </style>

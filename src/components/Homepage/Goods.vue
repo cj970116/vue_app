@@ -74,4 +74,14 @@ export default {
             }
         }
     }
+
+    @media screen and (min-width:1024px) and (max-width:1920px){
+        .goodslist{
+            .goodsitem{
+                width: 17%;
+                height: 60vh;
+                // margin-top: 10px;
+            }
+        }
+    }
 </style>
