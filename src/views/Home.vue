@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <van-swipe :auto="4000">
+    <van-swipe :autoplay="4000">
       <van-swipe-item v-for="(item, index) in imgList" :key="index">
         <van-image :src="getImages(item.images.large)" alt="" class="swpImg">
           <template v-slot:loading>
@@ -84,20 +84,35 @@ export default {
 </script>
 
 <style scoped>
+
 .van-swipe {
   height: 60vh;
   width: 100%;
-  background: thistle;
 }
 .swpImg {
   width: 100%;
   height: 100%;
 }
+
+@media screen and (min-width:1024px) and (max-width:1920px){
+  .van-swipe{
+    width: 15vw;
+    height: 50vh;
+    margin: 0 auto;
+  }
+  .swpImg{
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .mui-col-sm-3 {
   width:33.3%;
+ 
 }
 .mui-grid-view.mui-grid-9 .mui-table-view-cell{
   padding:5px;
+   background: #efeff4;
 }
 .mui-table-view-cell img {
   width: 5vh;

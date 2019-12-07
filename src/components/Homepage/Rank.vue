@@ -54,4 +54,16 @@ export default {
            width:100%;
        }
    }
+
+   @media screen and (min-width:1024px) and (max-width:1920px){
+     .mui-card{
+       width: 25%;
+       margin: 20px auto;
+       border-radius: 10px;
+       box-shadow: 0 0 10px silver;
+       img{
+           width:100%;
+       }
+   }
+   }
 </style>
