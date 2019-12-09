@@ -1,6 +1,6 @@
 # 这是一个vue_app项目
 
-## 🔥 [项目预览地址](https://cj970116.github.io/vue_app)
+## 🔥 [项目预览地址](https://cj970116.github.io/vue_app)(由于商品接口是http协议,github预览地址是https的,请求被阻塞,请clone gh-pages分支代码本地打开)
 
 ## 用(传统方式)命令行把修改过后的代码上传到Github
 1. git add .
